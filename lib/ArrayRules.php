@@ -241,7 +241,7 @@ abstract class ArrayRules {
                     'domain_rating' => array('float', false, true),
             ),
             'refdomains_new_lost_counters' => array(
-                    'date' => array('int', true, true),
+                    'date' => array('date', true, true),
                     'type' => array('string', true, false),
                     'refdomain' => array('string', true, false),
                     'new' => array('int', false, true),
@@ -250,7 +250,7 @@ abstract class ArrayRules {
                     'lost_total' => array('int', false, true),
             ),
             'refdomains_new_lost' => array(
-                    'date' => array('int', true, true),
+                    'date' => array('date', true, true),
                     'type' => array('string', true, true),
                     'refdomain' => array('string', true, true),
                     'domain_rating' => array('float', false, true),
