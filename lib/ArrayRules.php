@@ -25,12 +25,13 @@ abstract class ArrayRules {
             'gte' => '>=',
             'substring' => 'substring',
             'word' => 'word',
+            'subdomain' => 'subdomain',
     );
     public static $functions = array(
             "to" => array('json', 'xml','php'),
             "set" => array('target','limit','offset'),
-            "where" => array('eq','ne','lt', 'gt', 'lte', 'gte', 'substring','word'),
-            "having" => array('eq','ne','lt', 'gt', 'lte', 'gte', 'substring','word'),
+            "where" => array('eq','ne','lt', 'gt', 'lte', 'gte', 'substring','word','subdomain'),
+            "having" => array('eq','ne','lt', 'gt', 'lte', 'gte', 'substring','word','subdomain'),
             "mode" => array('exact', 'domain', 'subdomains', 'prefix'),
             "get" => array(
                     'ahrefs_rank',
