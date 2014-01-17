@@ -209,7 +209,7 @@ abstract class ArrayRules {
                     'encoding' => array('string', true, true),
                     'title' => array('string', true, true),
                     'redirect_url' => array('string', true, true),
-                    'contect_encoding' => array('string', true, true),
+                    'content_encoding' => array('string', true, true),
             ),
             'pages_extended' => array(
                     'url' => array('string', true, true),
@@ -222,7 +222,7 @@ abstract class ArrayRules {
                     'encoding' => array('string', true, true),
                     'title' => array('string', true, true),
                     'redirect_url' => array('string', true, true),
-                    'contect_encoding' => array('string', true, true),
+                    'content_encoding' => array('string', true, true),
                     'backlinks' => array('int', true, true),
                     'dofollow' => array('int', true, true),
                     'nofollow' => array('int', true, true),
