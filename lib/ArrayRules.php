@@ -161,7 +161,7 @@ abstract class ArrayRules {
                     "domain_to" => array('string', false, true),
                     "links" => array('int', false, true),
                     "unique_pages" => array('int', false, true),
-                    "domain_from_rating" => array('float', false, true),
+                    "domain_to_rating" => array('int', false, true),
             ),
             "metrics" => array(
                     "backlinks" => array('int', false, false),
