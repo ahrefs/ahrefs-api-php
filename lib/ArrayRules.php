@@ -56,7 +56,7 @@ abstract class ArrayRules {
     public static $columns = array(
             "ahrefs_rank" => array(
                     "url" => array('string', true, true),
-                    "ahrefs_rank" => array('Float', false, true),
+                    "ahrefs_rank" => array('int', false, true),
             ),
             "anchors" => array(
                     "anchor" => array('string', true, true),
@@ -76,8 +76,8 @@ abstract class ArrayRules {
             "backlinks" => array(
                     "url_from" => array('string', true, true),
                     "url_to" => array('string', true, true),
-                    "ahrefs_rank" => array('float', true, true),
-                    "domain_rating" => array('float', false, true),
+                    "ahrefs_rank" => array('int', true, true),
+                    "domain_rating" => array('int', false, true),
                     "ip_from" => array('string', true, true),
                     "links_internal" => array('int', true, true),
                     "links_external" => array('int', true, true),
@@ -100,8 +100,8 @@ abstract class ArrayRules {
             "backlinks_new_lost" => array(
                     "date" => array('date', true, true),
                     "type" => array('string', true, true),
-                    "ahrefs_rank" => array('float', true, true),
-                    "domain_rating" => array('float', true, true),
+                    "ahrefs_rank" => array('int', true, true),
+                    "domain_rating" => array('int', true, true),
                     "url_from" => array('string', true, true),
                     "url_to" => array('string', true, true),
                     "links_internal" => array('int', true, true),
@@ -126,8 +126,8 @@ abstract class ArrayRules {
             "backlinks_new_lost_counters" => array(
                     "date" => array('date', true, true),
                     "type" => array('string', true, false),
-                    "ahrefs_rank" => array('float', true, false),
-                    "domain_rating" => array('float', true, false),
+                    "ahrefs_rank" => array('int', true, false),
+                    "domain_rating" => array('int', true, false),
                     "url_from" => array('string', true, false),
                     "url_to" => array('string', true, true),
                     "links_internal" => array('int', true, false),
@@ -154,7 +154,7 @@ abstract class ArrayRules {
                     "lost_total" => array('int', false, true),
             ),
             "domain_rating" => array(
-                    "domain_rating" => array('float', false, true),
+                    "domain_rating" => array('int', false, true),
             ),
             "linked_domains" => array(
                     "domain_from" => array('string', false, true),
@@ -239,7 +239,7 @@ abstract class ArrayRules {
                     'refpages' => array('int', true, true),
                     'first_seen' => array('date', true, true),
                     'last_visited' => array('date', true, true),
-                    'domain_rating' => array('float', false, true),
+                    'domain_rating' => array('int', false, true),
             ),
             'refdomains_new_lost_counters' => array(
                     'date' => array('date', true, true),
@@ -254,7 +254,7 @@ abstract class ArrayRules {
                     'date' => array('date', true, true),
                     'type' => array('string', true, true),
                     'refdomain' => array('string', true, true),
-                    'domain_rating' => array('float', false, true),
+                    'domain_rating' => array('int', false, true),
             ),
     );
 }
