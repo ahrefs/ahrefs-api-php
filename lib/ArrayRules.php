@@ -48,7 +48,8 @@ abstract class ArrayRules {
                     'pages_extended',
                     'refdomains',
                     'refdomains_new_lost',
-                    'refdomains_new_lost_counters'
+                    'refdomains_new_lost_counters',
+                    'subscription_info'
             ),
             "prepare" => array('ahrefs_rank','anchors','anchors_refdomains','backlinks', 'backlinks_new_lost', 'backlinks_new_lost_counters', 'domain_rating', 'linked_domains', 'metrics', 'metrics_extended', 'pages', 'pages_extended','refdomains','refdomains_new_lost','refdomains_new_lost_counters'),
             "order" => array('by'),
@@ -256,5 +257,10 @@ abstract class ArrayRules {
                     'refdomain' => array('string', true, true),
                     'domain_rating' => array('int', false, true),
             ),
+            'subscription_info' => array(
+                'rows_left' => array('int', false, false),
+                'rows_limit' => array('int', false, false),
+                'subscription' => array('string', false, false),
+            )
     );
 }

@@ -335,7 +335,7 @@ class AhrefsAPI {
     /**
      * Reset params parameter
      */
-    private function reset() {
+    public function reset() {
     	$this->params = array(
     	        'token' => $this->params['token'],
     	        'target' => $this->params['target'],
