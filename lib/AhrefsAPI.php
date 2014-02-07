@@ -10,7 +10,7 @@
  * Requires file_get_contents
  * 
  */
-require('ArrayRules.php');
+require_once('ArrayRules.php');
 
 if (!function_exists('curl_init')) {
   throw new Exception('CURL PHP extension needed.');
