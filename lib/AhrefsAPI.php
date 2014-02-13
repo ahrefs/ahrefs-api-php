@@ -251,7 +251,7 @@ class AhrefsAPI {
     			$value[2] = '"'.$value[2].'"';
     		}
     		
-    		if ($value[0] != 'substring' && $value[0] != 'word' && $value[0] != 'subdomain')
+    		if (strlen($value[0]) > 3) //if the operator is not lte, lt, gt, gte, eq, ne
     			$value = $value[1].$this->where[$value[0]].$value[2];
     		else
     			$value = "$value[0]($value[1],$value[2])";
