@@ -46,6 +46,7 @@ class AhrefsAPI {
     private $where;
     private $functions;
     private $columns;
+    private $quotedValue;
     private $is_prepare = false;
     private $benchmark = array();
     /**
@@ -62,6 +63,7 @@ class AhrefsAPI {
     	$this->where = ArrayRules::$where;
     	$this->functions = ArrayRules::$functions;
         $this->columns = ArrayRules::$columns;
+        $this->quotedValue = ArrayRules::$quotedValue;
         if ($apiUrl != '')
             $this->apiURL = $apiUrl;
     }
@@ -245,24 +247,33 @@ class AhrefsAPI {
      * @param string $value The value of the parameter
      * @return $this
      */
-    private function set_param($param,$value) { 
+    private function set_param($param, $condition) {
         if (in_array($param, array('where', 'having'))) {
-            $this->oriParams[$param][] = $value;
+            $this->oriParams[$param][] = $condition;
 
-    		if ($value[2] != 'false' && $value[2] != 'true') {
-    			$value[2] = '"'.$value[2].'"';
-    		}
-    		
-    		if (strlen($value[0]) < 4) //if the operator is not lte, lt, gt, gte, eq, ne
-    			$value = $value[1].$this->where[$value[0]].$value[2];
-    		else
-    			$value = "$value[0]($value[1],$value[2])";
+            $column = $condition[1];
+            $operator = $condition[0];
+            $value = $condition[2];
+
+            //if the operator is lte, lt, gt, gte, eq, ne
+    		if (strlen($operator) < 4) {
+                //quote the value depends on the column type
+                $value = $this->wrapValue($value, $column);
+
+                $condition = $column.$this->where[$operator].$value;
+            } else {
+                //quote the value depends on the operator/function type
+                $value = $this->wrapValue($value, $operator);
+
+                $condition = "$operator($column,$value)";
+            }
+
     		if (!isset($this->params[$param]))
-    			$this->params[$param] = $value;
+    			$this->params[$param] = $condition;
     		else
-    			$this->params[$param] .= ','.$value;
+    			$this->params[$param] .= ','.$condition;
     	} else {
-    		$this->params[$param] = $value;
+    		$this->params[$param] = $condition;
     	}
 
     	if ($param == 'from') 
@@ -272,7 +283,24 @@ class AhrefsAPI {
     	else
   		  	return $this;
     }
-    
+
+
+    private function wrapValue($value, $type) {
+        //if we need to quote this value
+        if (in_array($type, $this->quotedValue))
+            $value = '"'.$value.'"';
+        else {
+            foreach($this->columns as $val) {
+                if (isset($val[$type])) {
+                    if (in_array($val[$type][0], array('string','date'))) {
+                        $value = '"'.$value.'"';
+                        return $value;
+                    }
+                }
+            }
+        }
+        return $value;
+    }
 /*
     private function cacheResult() {
     	if ($this->cache) {

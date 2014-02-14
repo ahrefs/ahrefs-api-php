@@ -16,6 +16,11 @@ abstract class ArrayRules {
      * @var Array 	$functions	List of available functions
      * @var Array 	$column 	List of available column for "select", "order_by", "where" and "having"
      */
+
+    public static $quotedValue = array(
+        'substring', 'word', 'subdomain'
+    );
+
     public static $where = array(
             'ne' => '<>',
             'eq' => '=',
@@ -26,12 +31,13 @@ abstract class ArrayRules {
             'substring' => 'substring',
             'word' => 'word',
             'subdomain' => 'subdomain',
+            'terms' => 'terms',
     );
     public static $functions = array(
             "to" => array('json', 'xml','php'),
             "set" => array('target','limit','offset'),
-            "where" => array('eq','ne','lt', 'gt', 'lte', 'gte', 'substring','word','subdomain'),
-            "having" => array('eq','ne','lt', 'gt', 'lte', 'gte', 'substring','word','subdomain'),
+            "where" => array('eq','ne','lt', 'gt', 'lte', 'gte', 'substring','word','subdomain', 'terms'),
+            "having" => array('eq','ne','lt', 'gt', 'lte', 'gte', 'substring','word','subdomain', 'terms'),
             "mode" => array('exact', 'domain', 'subdomains', 'prefix'),
             "get" => array(
                     'ahrefs_rank',
