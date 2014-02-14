@@ -53,7 +53,7 @@ class AhrefsAPI {
      * @param string $apiToken Application API Token from ahrefs website
      * @param boolean $debug Debug status
      */
-    public function __construct($token = '', $debug = false) {   
+    public function __construct($token = '', $debug = false, $apiUrl = '') {
     	if (trim($token) == '')
     		throw new Exception("API token is required.");
     	$this->params['token'] = $token;
@@ -62,6 +62,8 @@ class AhrefsAPI {
     	$this->where = ArrayRules::$where;
     	$this->functions = ArrayRules::$functions;
         $this->columns = ArrayRules::$columns;
+        if ($apiUrl != '')
+            $this->apiURL = $apiUrl;
     }
 
     /**
