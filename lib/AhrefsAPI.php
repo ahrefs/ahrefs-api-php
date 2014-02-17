@@ -235,6 +235,9 @@ class AhrefsAPI {
        		case "having":
     			$arguments = array('having',array_merge(array($method),$args));
        		break;
+            case "params":
+                $arguments = array($args[0], $args[1]);
+                break;
        		default:	
        			throw new Exception("Function <b>$method</b> not found");
     	}
