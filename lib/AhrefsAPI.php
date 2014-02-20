@@ -382,12 +382,14 @@ class AhrefsAPI {
      * When debug is TRUE, this function will print out debug messages
      */
     private function displayDebug() {
-        $infos = $this->getCurlInfo();
-        foreach ($infos as $info) {
-            echo "<div>";
-            echo "<b>API link:</b> $info[url]<br>";
-            echo "<b>Execution time:</b> $info[total_time] seconds.<br>";
-            echo "</div><br>";
+        if ($this->debug) {
+            $infos = $this->getCurlInfo();
+            foreach ($infos as $info) {
+                echo "<div>";
+                echo "<b>API link:</b> $info[url]<br>";
+                echo "<b>Execution time:</b> $info[total_time] seconds.<br>";
+                echo "</div><br>";
+            }
         }
     }
     
