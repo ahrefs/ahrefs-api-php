@@ -32,7 +32,7 @@ class AhrefsAPI {
 	 * @var Array 	$functions	List of available functions
 	 * @var Array 	$column 	List of available column for "select", "order_by", "where" and "having"
 	 * @var Boolean $is_prepare is it _get or _prepare call
-	 * @var Array 	$benchmare 	Keep script execution start time and end time
+	 * @var Array 	$curlInfo 	An array of curl informations
 	 */
     private $apiURL = 'http://apiv2.ahrefs.com';
     private $params;
@@ -48,7 +48,7 @@ class AhrefsAPI {
     private $columns;
     private $quotedValue;
     private $is_prepare = false;
-    private $benchmark = array();
+    private $curlInfo = array();
     /**
      * Constructing class
      * @param string $apiToken Application API Token from ahrefs website
@@ -92,10 +92,8 @@ class AhrefsAPI {
      * 
      */
     public function run($multi = true) {
-        $this->benchmark['start_time'] = microtime(true);
         $content = $this->getContent($multi);
-        $this->benchmark['end_time'] = microtime(true);
-        $this->displayDebug($multi);
+        $this->displayDebug();
         return $content;
     }
     /**
@@ -352,11 +350,14 @@ class AhrefsAPI {
                 } while ($mrc == CURLM_CALL_MULTI_PERFORM);
             }
         }
-        
+
+        $this->curlInfo = array();
         foreach ($links as $key => $params) {
             curl_multi_remove_handle($mh, $ch[$key]);
             //getting the output
             $results[$key] = curl_multi_getcontent($ch[$key]);
+            $this->curlInfo[] = curl_getinfo($ch[$key]);
+
         }
         curl_multi_close($mh);
         
@@ -380,17 +381,14 @@ class AhrefsAPI {
     /**
      * When debug is TRUE, this function will print out debug messages
      */
-    private function displayDebug($multi = false) {
-        $links = $this->paramsURLs;
-        if (!$multi)
-            $links[0] = $this->paramsURL;
-    	if ($this->debug) {
-    		$time = $this->benchmark['end_time'] - $this->benchmark['start_time'];
-    		echo "<br><b>Execution time:</b> $time seconds.<br>";
-    		foreach ($links as $link) 
-    		  echo "<b>API link:</b> $this->apiURL/?$link<br>";
-    		echo "</pre>";
-    	}
+    private function displayDebug() {
+        $infos = $this->getCurlInfo();
+        foreach ($infos as $info) {
+            echo "<div>";
+            echo "<b>API link:</b> $info[url]<br>";
+            echo "<b>Execution time:</b> $info[total_time] seconds.<br>";
+            echo "</div><br>";
+        }
     }
     
     /**
@@ -400,9 +398,17 @@ class AhrefsAPI {
      * @return Error string
      */
     private function isFunction($call, $name) {
-    	if (!(isset($this->functions[$call]) && in_array($name, $this->functions[$call]))) {
-    		throw new Exception("Function <b>{$call}_{$name}</b> not found.");
-    	}
+        if (!(isset($this->functions[$call]) && in_array($name, $this->functions[$call]))) {
+            throw new Exception("Function <b>{$call}_{$name}</b> not found.");
+        }
+    }
+
+    /**
+     * Get an array of curlinfo
+     * @return curlInfo Array
+     */
+    public function getCurlInfo() {
+        return $this->curlInfo;
     }
 }
 
