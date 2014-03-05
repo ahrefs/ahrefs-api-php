@@ -104,6 +104,10 @@ class AhrefsAPI {
      * @return boolean 
      */    
     private function checkColumns() {
+        //is checking enabled
+        if (!$this->checking)
+            return true;
+        
         $columns = $this->columns[$this->params['from']];
         //checking select
         if (isset($this->params['select'])) {
