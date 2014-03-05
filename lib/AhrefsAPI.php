@@ -301,7 +301,7 @@ class AhrefsAPI {
             foreach($this->columns as $val) {
                 if (isset($val[$type])) {
                     if (in_array($val[$type][0], array('string','date'))) {
-                        $value = '"'.$value.'"';
+                        $value = '"'.addslashes($value).'"';
                         return $value;
                     }
                 }
