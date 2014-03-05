@@ -32,6 +32,7 @@ class AhrefsAPI {
 	 * @var Array 	$functions	List of available functions
 	 * @var Array 	$column 	List of available column for "select", "order_by", "where" and "having"
 	 * @var Boolean $is_prepare is it _get or _prepare call
+	 * @var Boolean $checking   flag to enable/disable column & function checking
 	 * @var Array 	$curlInfo 	An array of curl informations
 	 */
     private $apiURL = 'http://apiv2.ahrefs.com';
@@ -48,19 +49,21 @@ class AhrefsAPI {
     private $columns;
     private $quotedValue;
     private $is_prepare = false;
+    private $checking = true;
     private $curlInfo = array();
     /**
      * Constructing class
      * @param string $apiToken Application API Token from ahrefs website
      * @param boolean $debug Debug status
      */
-    public function __construct($token = '', $debug = false, $apiUrl = '') {
+    public function __construct($token = '', $debug = false, $apiUrl = '', $checking = true) {
     	if (trim($token) == '')
     		throw new Exception("API token is required.");
     	$this->params['token'] = $token;
     	$this->params['output'] = 'json';
     	$this->debug = $debug;
-    	$this->where = ArrayRules::$where;
+        $this->checking = $checking;
+        $this->where = ArrayRules::$where;
     	$this->functions = ArrayRules::$functions;
         $this->columns = ArrayRules::$columns;
         $this->quotedValue = ArrayRules::$quotedValue;
@@ -400,6 +403,10 @@ class AhrefsAPI {
      * @return Error string
      */
     private function isFunction($call, $name) {
+        //is checking enabled
+        if (!$this->checking)
+            return true;
+
         if (!(isset($this->functions[$call]) && in_array($name, $this->functions[$call]))) {
             throw new Exception("Function <b>{$call}_{$name}</b> not found.");
         }
