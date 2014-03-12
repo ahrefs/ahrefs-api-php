@@ -379,6 +379,7 @@ class AhrefsAPI {
     public function reset() {
     	$this->params = array(
     	        'token' => $this->params['token'],
+		'output' => $this->params['output'],
     	        'target' => $this->params['target'],
     	    	'mode' => $this->params['mode'],
     	);
