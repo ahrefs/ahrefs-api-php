@@ -303,6 +303,11 @@ class AhrefsAPI {
                     if (in_array($val[$type][0], array('string','date'))) {
                         $value = '"'.addslashes($value).'"';
                         return $value;
+                    } else if (gettype($value) == 'boolean') {
+                        if ($value)
+                            return 'true';
+                        else
+                            return 'false';
                     }
                 }
             }

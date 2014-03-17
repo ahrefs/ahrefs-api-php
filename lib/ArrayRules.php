@@ -34,7 +34,7 @@ abstract class ArrayRules {
     );
     public static $functions = array(
             "to" => array('json', 'xml','php'),
-            "set" => array('target','limit','offset'),
+            "set" => array('target','limit','offset','output'),
             "where" => array('eq','ne','lt', 'gt', 'lte', 'gte', 'substring','word','subdomain'),
             "having" => array('eq','ne','lt', 'gt', 'lte', 'gte', 'substring','word','subdomain'),
             "mode" => array('exact', 'domain', 'subdomains', 'prefix'),
