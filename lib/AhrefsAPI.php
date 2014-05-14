@@ -298,7 +298,7 @@ class AhrefsAPI {
     private function wrapValue($value, $type) {
         //if we need to quote this value
         if (in_array($type, $this->quotedValue))
-            $value = '"'.$value.'"';
+            $value = '"'.addslashes($value).'"';
         else {
             foreach($this->columns as $val) {
                 if (isset($val[$type])) {
