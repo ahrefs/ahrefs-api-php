@@ -258,7 +258,7 @@ class AhrefsAPI {
      * @return $this
      */
     private function set_param($param, $condition) {
-        if (in_array($param, array('where', 'having'))) {
+        if (in_array($param, array('where', 'having')) && is_array($condition)) {
             $this->oriParams[$param][] = $condition;
 
             $column = $condition[1];
