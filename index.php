@@ -16,7 +16,7 @@
 	 * set_target('ahrefs.com/api/')
 	 * mode_exact()		 ->  ahrefs.com/api/	
 	 * mode_domain() 	 ->  ahrefs.com/*	
-	 * mode_subdomain()  ->  *ahrefs.com/*	
+	 * mode_subdomains()  ->  *ahrefs.com/*
 	 * mode_prefix()	 ->  ahrefs.com/api/*	
 	 * for more details, visit https://ahrefs.com/api/documentation.php
 	 */
@@ -24,8 +24,8 @@
 	
 	/**
 	 * Query the results.
-	 * select('column_a','column_b','column_c')    							 //specify a comma-separated list of columns for the service to return. If the parameter is not set or is equal to Ò*Ó, all columns of the table are returned. 
-	 																		 //Only the columns that can appear in the ÒhavingÓ filter will be returned. 
+	 * select('column_a','column_b','column_c')    							 //specify a comma-separated list of columns for the service to return. If the parameter is not set or is equal to ï¿½*ï¿½, all columns of the table are returned. 
+	 																		 //Only the columns that can appear in the ï¿½havingï¿½ filter will be returned. 
 	 																		 
 	 * where_[eq|ne|gt|lt|gte|lte|substring|word]('column_a', 'value_a')   	 //eq (equal '='), ne(not equal '<>'), gt(greater than '>='), lt(less than '<='), gte(greater than or equal '>='), lte(less than or equal '<=').
 	   Sample usage :
@@ -33,8 +33,8 @@
 	   $Ahrefs->where_eq('url', 'ahrefs.com')->where_gt('ahrefs_rank', 3)    //returning rows with url="ahrefs.com" AND ahrefs_rank>3.
 	 
 	 * having_[eq|ne|gt|lt|gte|lte|substring|word]('column_a', 'value_a')    //similar to where, the difference is for some tables, the returned data is implicitly grouped before being returned. 
-	 																		 //The ÒwhereÓ filter applies to the data before grouping, and the ÒhavingÓ filter applies to the grouped data. 
-	 																		 //See column descriptions under documentations for the particular table to decide whether to use ÒwhereÓ or ÒhavingÓ for filtering. 
+	 																		 //The ï¿½whereï¿½ filter applies to the data before grouping, and the ï¿½havingï¿½ filter applies to the grouped data. 
+	 																		 //See column descriptions under documentations for the particular table to decide whether to use ï¿½whereï¿½ or ï¿½havingï¿½ for filtering. 
 	 																		 
 	 * order_by('column_a:desc','column_b','column_c:desc')					 //sorting the result based on the columns, ascending by default. For descending usage, add :desc after the column name.
 	 * set_limit() 															 //limit the amount of retrieved data, the default is 1000.
