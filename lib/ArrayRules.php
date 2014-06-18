@@ -182,8 +182,8 @@ abstract class ArrayRules {
             ),
             "linked_anchors" => array(
                 "anchor" => array('string', true, true),
-                "links_internal" => array('int', false, true),
-                "links_external" => array('int', false, true),
+                "links_internal" => array('int', true, true),
+                "links_external" => array('int', true, true),
                 "url_from" => array('string', true, false),
                 "url_to" => array('string', true, false),
                 "ahrefs_rank" => array('int', true, false),
