@@ -21,8 +21,8 @@
 	 * for more details, visit https://ahrefs.com/api/documentation.php
 	 */
 	$Ahrefs->set_target('ahrefs.com')->mode_domain();
-	
-	/**
+
+/**
 	 * Query the results.
 	 * select('column_a','column_b','column_c')    							 //specify a comma-separated list of columns for the service to return. If the parameter is not set or is equal to '*', all columns of the table are returned.
 	 																		 //Only the columns that can appear in the 'having' filter will be returned.
@@ -31,6 +31,9 @@
 	   Sample usage :
 	   $Ahrefs->where_eq('url', 'ahrefs.com') 								 //returning rows with url="ahrefs.com".
 	   $Ahrefs->where_eq('url', 'ahrefs.com')->where_gt('ahrefs_rank', 3)    //returning rows with url="ahrefs.com" AND ahrefs_rank>3.
+     *
+     *
+     * where('raw_conditions')                                               //raw where conditions
 	 
 	 * having_[eq|ne|gt|lt|gte|lte|substring|word]('column_a', 'value_a')    //similar to where, the difference is for some tables, the returned data is implicitly grouped before being returned. 
 	 																		 //The 'where' filter applies to the data before grouping, and the 'having' filter applies to the grouped data.
@@ -45,21 +48,22 @@
 	$Ahrefs->select('date','type','refdomain','domain_rating')->order_by('domain_rating:desc','refdomain')->where_gt('date','2013-11-24')->where_eq('type','lost')->set_limit(10);
 	/**
 	 * Trigger the call and get "Ahrefs Rank" based on above settings.
-	 * 	get_ahrefs_rank();						https://ahrefs.com/api/table.php?table=ahrefs_rank
-	 * 	get_anchors();							https://ahrefs.com/api/table.php?table=get_anchors
-	 * 	get_anchors_refdomains();				https://ahrefs.com/api/table.php?table=get_anchors_refdomains
-	 * 	get_backlinks();						https://ahrefs.com/api/table.php?table=get_backlinks	
-	 * 	get_backlinks_new_lost();				https://ahrefs.com/api/table.php?table=get_backlinks_new_lost
-	 * 	get_backlinks_new_lost_counters();		https://ahrefs.com/api/table.php?table=get_backlinks_new_lost_counters
-	 * 	get_domain_rating();					https://ahrefs.com/api/table.php?table=get_domain_rating
-	 * 	get_linked_domains();					https://ahrefs.com/api/table.php?table=get_linked_domains
-	 * 	get_metrics();							https://ahrefs.com/api/table.php?table=get_metrics
-	 * 	get_metrics_extended();					https://ahrefs.com/api/table.php?table=get_metrics_extended
-	 * 	get_pages();							https://ahrefs.com/api/table.php?table=get_pages
-	 * 	get_pages_extended();					https://ahrefs.com/api/table.php?table=get_pages_extended
-	 * 	get_refdomains();						https://ahrefs.com/api/table.php?table=get_refdomains
-	 * 	get_refdomains_new_lost();				https://ahrefs.com/api/table.php?table=get_refdomains_new_lost
-	 * 	get_refdomains_new_lost_counters();		https://ahrefs.com/api/table.php?table=get_refdomains_new_lost_counters
+	 * 	get_ahrefs_rank();						https://ahrefs.com/api/documentation/ahrefs-rank
+	 * 	get_anchors();							https://ahrefs.com/api/documentation/anchors
+	 * 	get_anchors_refdomains();				https://ahrefs.com/api/documentation/anchors-refdomains
+	 * 	get_backlinks();						https://ahrefs.com/api/documentation/backlinks
+	 * 	get_backlinks_new_lost();				https://ahrefs.com/api/documentation/backlinks-new-lost
+	 * 	get_backlinks_new_lost_counters();		https://ahrefs.com/api/documentation/backlinks-new-lost-counters
+	 * 	get_domain_rating();					https://ahrefs.com/api/documentation/domain-rating
+     * 	get_linked_anchors();					https://ahrefs.com/api/documentation/linked-anchors
+     * 	get_linked_domains();					https://ahrefs.com/api/documentation/linked-domains
+	 * 	get_metrics();							https://ahrefs.com/api/documentation/metrics
+	 * 	get_metrics_extended();					https://ahrefs.com/api/documentation/metrics-extended
+	 * 	get_pages();							https://ahrefs.com/api/documentation/pages
+	 * 	get_pages_extended();					https://ahrefs.com/api/documentation/pages-extended
+	 * 	get_refdomains();						https://ahrefs.com/api/documentation/refdomains
+	 * 	get_refdomains_new_lost();				https://ahrefs.com/api/documentation/refdomains-new-lost
+	 * 	get_refdomains_new_lost_counters();		https://ahrefs.com/api/documentation/refdomains-new-lost-counters
 	 */	
 	$result = $Ahrefs->get_refdomains_new_lost();
 	

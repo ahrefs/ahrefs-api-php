@@ -45,9 +45,10 @@ abstract class ArrayRules {
                     'backlinks', 
                     'backlinks_new_lost', 
                     'backlinks_new_lost_counters', 
-                    'domain_rating', 
-                    'linked_domains', 
-                    'metrics', 
+                    'domain_rating',
+                    'linked_anchors',
+                    'linked_domains',
+                    'metrics',
                     'metrics_extended', 
                     'pages', 
                     'pages_extended',
@@ -64,6 +65,7 @@ abstract class ArrayRules {
                     'backlinks_new_lost',
                     'backlinks_new_lost_counters',
                     'domain_rating',
+                    'linked_anchors',
                     'linked_domains',
                     'metrics',
                     'metrics_extended',
@@ -177,6 +179,11 @@ abstract class ArrayRules {
             ),
             "domain_rating" => array(
                     "domain_rating" => array('int', false, true),
+            ),
+            "linked_anchors" => array(
+                "anchor" => array('string', true, true),
+                "links_internal" => array('string', false, true),
+                "links_external" => array('int', false, true)
             ),
             "linked_domains" => array(
                     "domain_from" => array('string', false, true),
