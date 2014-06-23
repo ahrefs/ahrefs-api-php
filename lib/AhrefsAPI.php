@@ -349,6 +349,8 @@ class AhrefsAPI {
             curl_setopt($ch[$key], CURLOPT_HEADER, 0);
             curl_setopt($ch[$key], CURLOPT_ENCODING, 'gzip,deflate');
             curl_setopt($ch[$key], CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch[$key], CURLOPT_CONNECTTIMEOUT, 20);
+            curl_setopt($ch[$key], CURLOPT_TIMEOUT, 240); //timeout in seconds
             curl_multi_add_handle($mh,$ch[$key]);
         }
 
