@@ -283,7 +283,14 @@ class AhrefsAPI {
             else
                 $this->params[$param] .= ','.$condition;
         } else {
-            $this->params[$param] = $condition;
+            if (!in_array($param, array('where', 'having')))
+                $this->params[$param] = $condition;
+            else {
+                if (isset($this->params[$param]))
+                    $this->params[$param] .= ','.$condition;
+                else
+                    $this->params[$param] = $condition;
+            }
         }
 
         if ($param == 'from')
