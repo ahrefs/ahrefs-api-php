@@ -379,8 +379,19 @@ class AhrefsAPI {
             curl_multi_remove_handle($mh, $ch[$key]);
             //getting the output
             $results[$key] = curl_multi_getcontent($ch[$key]);
-            $this->curlInfo[] = curl_getinfo($ch[$key]);
-
+            $cinfo = curl_getinfo($ch[$key]);
+            if (curl_errno($ch[$key]))
+            {
+                if (is_array($cinfo))
+                {
+                    $cinfo['curl_error'] = curl_error($ch[$key]);
+                }
+                else
+                {
+                    $cinfo = curl_error($ch[$key]);
+                }
+            }
+            $this->curlInfo[] = $cinfo;
         }
         curl_multi_close($mh);
 
