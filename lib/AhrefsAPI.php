@@ -354,6 +354,8 @@ class AhrefsAPI {
             //setting the links
             curl_setopt($ch[$key], CURLOPT_URL, $this->apiURL.'/?'.$params.'&token='.$this->token);
             curl_setopt($ch[$key], CURLOPT_HEADER, 0);
+            curl_setopt($ch[$key], CURLOPT_SSL_VERIFYHOST, 0);
+            curl_setopt($ch[$key], CURLOPT_SSL_VERIFYPEER, 0);
             curl_setopt($ch[$key], CURLOPT_ENCODING, 'gzip,deflate');
             curl_setopt($ch[$key], CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($ch[$key], CURLOPT_CONNECTTIMEOUT, 20);
