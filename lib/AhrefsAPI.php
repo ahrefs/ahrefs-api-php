@@ -163,7 +163,7 @@ class AhrefsAPI {
      */
     private function buildURL() {
         //no need target and mode for subscription_info
-        if ($this->params['from'] != 'subscription_info') {
+        if (isset($this->params['from']) && $this->params['from'] != 'subscription_info') {
             foreach ($this->reqParams as $reqParam) {
                 if (!isset($this->params[$reqParam]))
                     throw new Exception("<b>$reqParam</b> is required.");
