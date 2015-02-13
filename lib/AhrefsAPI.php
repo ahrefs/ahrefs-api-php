@@ -162,9 +162,12 @@ class AhrefsAPI {
      *
      */
     private function buildURL() {
-        foreach ($this->reqParams as $reqParam) {
-            if (!isset($this->params[$reqParam]))
-                throw new Exception("<b>$reqParam</b> is required.");
+        //no need target and mode for subscription_info
+        if ($this->params['from'] != 'subscription_info') {
+            foreach ($this->reqParams as $reqParam) {
+                if (!isset($this->params[$reqParam]))
+                    throw new Exception("<b>$reqParam</b> is required.");
+            }
         }
         $paramStr = array();
         foreach ($this->params as $k => $v) {
@@ -406,6 +409,10 @@ class AhrefsAPI {
      * Reset params parameter
      */
     public function reset() {
+        if (!isset($this->params['target']))
+            $this->params['target'] = '';
+        if (!isset($this->params['mode']))
+            $this->params['mode'] = '';
         $this->params = array(
             'output' => $this->params['output'],
             'target' => $this->params['target'],
