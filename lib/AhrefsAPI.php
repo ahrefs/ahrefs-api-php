@@ -433,7 +433,6 @@ class AhrefsAPI {
             'target' => $this->params['target'],
             'mode' => $this->params['mode'],
         );
-        $this->post = '';
         $this->oriParams = array();
     }
 
