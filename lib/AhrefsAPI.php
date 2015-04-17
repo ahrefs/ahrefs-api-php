@@ -41,7 +41,6 @@ class AhrefsAPI {
     private $paramsURL;
     private $paramsURLs;
     private $debug;
-    private $cache = false;
     private $err = array();
     private $reqParams = array('target', 'mode');
     private $where;
@@ -51,6 +50,7 @@ class AhrefsAPI {
     private $is_prepare = false;
     private $checking = true;
     private $curlInfo = array();
+    private $post = '';
     /**
      * Constructing class
      * @param string $token Application API Token from ahrefs website
@@ -246,12 +246,18 @@ class AhrefsAPI {
                 $arguments = array('having',array_merge(array($method),$args));
                 break;
             case "params":
-                $arguments = array($args[0], $args[1]);
+                if ($args[0] == 'post') {
+                    $this->post = $args[1];
+                } else {
+                    $arguments = array($args[0], $args[1]);
+                }
                 break;
             default:
                 throw new Exception("Function <b>$method</b> not found");
         }
-        return call_user_func_array($fn,$arguments);
+        if (isset($arguments)) {
+            return call_user_func_array($fn,$arguments);
+        }
     }
 
     /**
@@ -357,6 +363,15 @@ class AhrefsAPI {
             //setting the links
             curl_setopt($ch[$key], CURLOPT_URL, $this->apiURL.'/?'.$params.'&token='.$this->token);
             curl_setopt($ch[$key], CURLOPT_HEADER, 0);
+            if (!empty($this->post)) {
+                curl_setopt($ch[$key], CURLOPT_POST, 1);
+                curl_setopt($ch[$key], CURLOPT_HTTPHEADER, array('Content-Type: text/plain'));
+                curl_setopt($ch[$key], CURLOPT_POSTFIELDS, $this->post);
+                curl_setopt($ch[$key], CURLOPT_VERBOSE, 1);
+                curl_setopt($ch[$key], CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
+                curl_setopt($ch[$key], CURLOPT_LOW_SPEED_LIMIT, 1);
+                curl_setopt($ch[$key], CURLOPT_LOW_SPEED_TIME, 2400);
+            }
             curl_setopt($ch[$key], CURLOPT_SSL_VERIFYHOST, 0);
             curl_setopt($ch[$key], CURLOPT_SSL_VERIFYPEER, 0);
             curl_setopt($ch[$key], CURLOPT_ENCODING, 'gzip,deflate');
@@ -418,6 +433,7 @@ class AhrefsAPI {
             'target' => $this->params['target'],
             'mode' => $this->params['mode'],
         );
+        $this->post = '';
         $this->oriParams = array();
     }
 
