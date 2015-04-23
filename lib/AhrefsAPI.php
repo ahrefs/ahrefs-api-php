@@ -50,7 +50,8 @@ class AhrefsAPI {
     private $is_prepare = false;
     private $checking = true;
     private $curlInfo = array();
-    private $post = '';
+    private $post = 0;
+    private $withOriginalStats = 0;
     /**
      * Constructing class
      * @param string $token Application API Token from ahrefs website
@@ -248,6 +249,8 @@ class AhrefsAPI {
             case "params":
                 if ($args[0] == 'post') {
                     $this->post = $args[1];
+                } else if ($args[0] == 'withOriginalStats') {
+                    $this->withOriginalStats = $args[1];
                 } else {
                     $arguments = array($args[0], $args[1]);
                 }
@@ -354,8 +357,14 @@ class AhrefsAPI {
      */
     private function getContent($multi = false) {
         $links = $this->paramsURLs;
-        if (!$multi)
+        if (!$multi) {
             $links[0] = $this->paramsURL;
+            if ($this->withOriginalStats) {
+                parse_str($links[0], $links[1]);
+                $links[1]['limit'] = 1;
+                $links[1] = http_build_query($links[1]);
+            }
+        }
 
         $mh = curl_multi_init();
         foreach ($links as $key => $params) {
@@ -363,7 +372,7 @@ class AhrefsAPI {
             //setting the links
             curl_setopt($ch[$key], CURLOPT_URL, $this->apiURL.'/?'.$params.'&token='.$this->token);
             curl_setopt($ch[$key], CURLOPT_HEADER, 0);
-            if (!empty($this->post)) {
+            if ($this->post) {
                 curl_setopt($ch[$key], CURLOPT_POST, 1);
                 curl_setopt($ch[$key], CURLOPT_HTTPHEADER, array('Content-Type: text/plain'));
                 curl_setopt($ch[$key], CURLOPT_POSTFIELDS, $this->post);
@@ -371,6 +380,7 @@ class AhrefsAPI {
                 curl_setopt($ch[$key], CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
                 curl_setopt($ch[$key], CURLOPT_LOW_SPEED_LIMIT, 1);
                 curl_setopt($ch[$key], CURLOPT_LOW_SPEED_TIME, 2400);
+                $this->post = 0;
             }
             curl_setopt($ch[$key], CURLOPT_SSL_VERIFYHOST, 0);
             curl_setopt($ch[$key], CURLOPT_SSL_VERIFYPEER, 0);
@@ -395,7 +405,7 @@ class AhrefsAPI {
         }
 
         $this->curlInfo = array();
-        foreach ($links as $key => $params) {
+        foreach ($links as $key => $params)             {
             curl_multi_remove_handle($mh, $ch[$key]);
             //getting the output
             $results[$key] = curl_multi_getcontent($ch[$key]);
@@ -415,8 +425,14 @@ class AhrefsAPI {
         }
         curl_multi_close($mh);
 
-        if (!$multi)
+        if (!$multi) {
+            if (count($results) > 1) {
+                $results[0] = json_decode($results[0], true);
+                $results[0]['originalStats'] = json_decode($results[1], true)['stats'];
+                $results[0] = json_encode($results[0]);
+            }
             return $results[0];
+        }
         return $results;
     }
 
