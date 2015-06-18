@@ -429,7 +429,8 @@ class AhrefsAPI {
         if (!$multi) {
             if (count($results) > 1) {
                 $results[0] = json_decode($results[0], true);
-                $results[0]['originalStats'] = json_decode($results[1], true)['stats'];
+                $decoded = json_decode($results[1], true);
+                $results[0]['originalStats'] = $decoded['stats'];
                 $results[0] = json_encode($results[0]);
             }
             return $results[0];
