@@ -10,7 +10,34 @@ namespace pCyril\AhrefsApiPhp;
  *
  */
 
-
+/**
+ * Class AhrefsAPI
+ * @method AhrefsAPI set_limit(int)
+ * @method AhrefsAPI set_offset(int)
+ * @method AhrefsAPI set_output(string)
+ * @method AhrefsAPI set_target(string)
+ * @method mixed get_subscription_info()
+ * @method mixed get_broken_links()
+ * @method mixed get_ahrefs_rank()
+ * @method mixed get_anchors()
+ * @method mixed get_anchors_refdomains()
+ * @method mixed get_backlinks()
+ * @method mixed get_backlinks_new_lost()
+ * @method mixed get_backlinks_new_lost_counters()
+ * @method mixed get_broken_backlinks()
+ * @method mixed get_domain_rating()
+ * @method mixed get_linked_anchors()
+ * @method mixed get_linked_domains()
+ * @method mixed get_metrics()
+ * @method mixed get_metrics_extended()
+ * @method mixed get_pages()
+ * @method mixed get_pages_extended()
+ * @method mixed get_refdomains()
+ * @method mixed get_refdomains_by_type()
+ * @method mixed get_refdomains_new_lost()
+ * @method mixed get_refdomains_new_lost_counters()
+ * @method mixed get_refips()
+ */
 class AhrefsAPI {
 
     /**
