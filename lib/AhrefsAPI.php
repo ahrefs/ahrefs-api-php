@@ -517,12 +517,6 @@ class AhrefsAPI {
     }
 }
 
-
-/**
- * Function to handle the error exceptions
- * @return Formatted error String
- */
-function Error($exception) {
+set_exception_handler(function($exception) {
     echo "Error: " . $exception->getMessage();
-}
-set_exception_handler('Error');
+});
