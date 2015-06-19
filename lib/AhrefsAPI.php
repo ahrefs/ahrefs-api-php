@@ -77,6 +77,7 @@ class AhrefsAPI {
     private $curlInfo = array();
     private $post = 0;
     private $withOriginalStats = 0;
+    private $lastMessageError;
     /**
      * Constructing class
      * @param string $token Application API Token from ahrefs website
@@ -102,6 +103,7 @@ class AhrefsAPI {
     /**
      * Build API V2 parameters, displaying debug messages, resetting parameter variables, calling and returning API results from getContent()
      * @return output from getContent()
+     * @throws \Exception
      */
     private function fetch() {
         $this->checkColumns();
@@ -115,6 +117,8 @@ class AhrefsAPI {
                 $this->reset();
                 $this->is_prepare = false;
             }
+        } else {
+            throw new \Exception($this->lastMessageError);
         }
     }
 
@@ -220,8 +224,11 @@ class AhrefsAPI {
         if (!count($this->err))
             return false; //no error
 
-        foreach ($this->err as $error)
-            echo "Error: $error<br>";
+        $errorMessage = '';
+        foreach ($this->err as $error) {
+            $errorMessage .="Error: $error, ";
+        }
+        $this->lastMessageError = $errorMessage;
         return true;
 
     }
@@ -230,6 +237,8 @@ class AhrefsAPI {
      * Magic method to catch all functions and parse it to set_param function
      * @param string $method The name of the function
      * @param array $args Arguments passed to the function
+     * @return mixed
+     * @throws \Exception
      */
     public function __call($method,$args) {
         $method = explode('_', $method);
@@ -291,7 +300,7 @@ class AhrefsAPI {
     /**
      * Function to take and build the parameters needed to pass to the API
      * @param string $param The name of the parameter
-     * @param string $value The value of the parameter
+     * @param string $condition The value of the parameter
      * @return $this
      */
     private function set_param($param, $condition) {
@@ -360,25 +369,10 @@ class AhrefsAPI {
         }
         return $value;
     }
-    /*
-        private function cacheResult() {
-            if ($this->cache) {
-                $filename = 'lib/cache/'.$this->paramsURL;
-                if (!is_file($filename)) {
-                    $content = file_get_contents($this->apiURL.'/?'.$this->paramsURL);
-                    file_put_contents($filename, $content);
-                } else {
-                    $content = file_get_contents($filename);
-                }
-            } else
-                $content = file_get_contents($this->apiURL.'/?'.$this->paramsURL);
 
-            return $content;
-        }
-        */
     /**
      * Send the parameters to Ahrefs server and get the json/xml/php return
-     * @return json/xml/php data
+     * @return json|xml|php data
      */
     private function getContent($multi = false) {
         $links = $this->paramsURLs;
@@ -496,7 +490,8 @@ class AhrefsAPI {
      * Checking if the function exist in this file
      * @param String $call The name of the prefix
      * @param String $name the name of the function
-     * @return Error string
+     * @return bool
+     * @throws \Exception
      */
     private function isFunction($call, $name) {
         //is checking enabled
@@ -516,7 +511,3 @@ class AhrefsAPI {
         return $this->curlInfo;
     }
 }
-
-set_exception_handler(function($exception) {
-    echo "Error: " . $exception->getMessage();
-});
