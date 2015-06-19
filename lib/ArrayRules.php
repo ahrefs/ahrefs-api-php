@@ -1,4 +1,5 @@
 <?php
+namespace pCyril\AhrefsApiPhp;
 /**
  * AhrefsAPI v.0.1. Ahrefs.com API V2 wrapper for PHP
  *
@@ -9,6 +10,7 @@
  * Date: 18th December 2013
  *
  */
+
 abstract class ArrayRules {
     /**
      * Class Variables
