@@ -376,7 +376,6 @@ class AhrefsAPI {
                 curl_setopt($ch[$key], CURLOPT_POST, 1);
                 curl_setopt($ch[$key], CURLOPT_HTTPHEADER, array('Content-Type: text/plain'));
                 curl_setopt($ch[$key], CURLOPT_POSTFIELDS, $this->post);
-                curl_setopt($ch[$key], CURLOPT_VERBOSE, 1);
                 curl_setopt($ch[$key], CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
                 curl_setopt($ch[$key], CURLOPT_LOW_SPEED_LIMIT, 1);
                 curl_setopt($ch[$key], CURLOPT_LOW_SPEED_TIME, 2400);
@@ -429,8 +428,7 @@ class AhrefsAPI {
         if (!$multi) {
             if (count($results) > 1) {
                 $results[0] = json_decode($results[0], true);
-                $decoded = json_decode($results[1], true);
-                $results[0]['originalStats'] = $decoded['stats'];
+                $results[0]['originalStats'] = json_decode($results[1], true)['stats'];
                 $results[0] = json_encode($results[0]);
             }
             return $results[0];
