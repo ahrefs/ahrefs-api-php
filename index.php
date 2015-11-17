@@ -1,8 +1,11 @@
 <?php
-	/**
-	 * Include the AhrefsAPI class 
-	 */
-	include('lib/AhrefsAPI.php');
+
+/**
+ * Include the AhrefsAPI class
+ */
+require_once 'vendor/autoload.php';
+
+use ahrefs\AhrefsApiPhp\AhrefsAPI;
 
 	/**
 	 * Create an AhrefsAPI class instance
@@ -10,7 +13,6 @@
 	 * @param Boolean $debug Debug message
 	 */
 	$Ahrefs = new AhrefsAPI('[YOURTOKEN]', $debug = true);
-	
 	/**
 	 * Specify the aim of the request. The mode defines how the target will be interpreted. Example:
 	 * set_target('ahrefs.com/api/')

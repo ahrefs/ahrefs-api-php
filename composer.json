@@ -3,7 +3,7 @@
   "description": "Wrapper for Ahrefs API V2",
   "authors": [
     {
-      "name": "ahrefs",
+      "name": "ahrefs"
     }
   ],
   "require": {
