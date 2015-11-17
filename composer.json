@@ -1,10 +1,9 @@
 {
-  "name": "pCyril/ahrefs-api-php",
-  "description": "Ahref Api PHP just a fork to add a composer.json",
+  "name": "ahrefs/ahrefs-api-php",
+  "description": "Wrapper for Ahrefs API V2",
   "authors": [
     {
-      "name": "AHrefs",
-      "email": "cyril.perraud@reputationvip.com"
+      "name": "ahrefs",
     }
   ],
   "require": {
@@ -12,7 +11,7 @@
   },
   "autoload": {
     "psr-4": {
-      "pCyril\\AhrefsApiPhp\\": "lib"
+      "ahrefs\\AhrefsApiPhp\\": "lib"
     }
   }
 }
