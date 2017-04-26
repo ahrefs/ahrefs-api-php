@@ -1,4 +1,6 @@
 <?php
+
+namespace ahrefs\AhrefsApiPhp;
 /**
  * AhrefsAPI v.0.1. Ahrefs.com API V2 wrapper for PHP
  *
@@ -7,13 +9,77 @@
  *
  *
  */
-require_once('ArrayRules.php');
 
-if (!function_exists('curl_init')) {
-    throw new Exception('CURL PHP extension needed.');
-}
-
-class AhrefsAPI {
+/**
+ * Class AhrefsAPI
+ * @method AhrefsAPI set_limit(int)
+ * @method AhrefsAPI set_offset(int)
+ * @method AhrefsAPI set_output(string)
+ * @method AhrefsAPI set_target(string)
+ * @method AhrefsAPI mode_domain(string)
+ * @method AhrefsAPI mode_exact(string)
+ * @method AhrefsAPI mode_subdomains(string)
+ * @method AhrefsAPI mode_prefix(string)
+ * @method AhrefsAPI order_by(string)
+ * @method AhrefsAPI where_eq(string)
+ * @method AhrefsAPI where_ne(string)
+ * @method AhrefsAPI where_lt(string)
+ * @method AhrefsAPI where_lte(string)
+ * @method AhrefsAPI where_gt(string)
+ * @method AhrefsAPI where_gte(string)
+ * @method AhrefsAPI having_eq(string)
+ * @method AhrefsAPI having_ne(string)
+ * @method AhrefsAPI having_lt(string)
+ * @method AhrefsAPI having_lte(string)
+ * @method AhrefsAPI having_gt(string)
+ * @method AhrefsAPI having_gte(string)
+ * @method AhrefsAPI select(string)
+ * @method mixed get_subscription_info()
+ * @method mixed get_broken_links()
+ * @method mixed get_ahrefs_rank()
+ * @method mixed get_anchors()
+ * @method mixed get_anchors_refdomains()
+ * @method mixed get_backlinks()
+ * @method mixed get_backlinks_new_lost()
+ * @method mixed get_backlinks_new_lost_counters()
+ * @method mixed get_broken_backlinks()
+ * @method mixed get_domain_rating()
+ * @method mixed get_linked_anchors()
+ * @method mixed get_linked_domains()
+ * @method mixed get_metrics()
+ * @method mixed get_metrics_extended()
+ * @method mixed get_pages()
+ * @method mixed get_pages_extended()
+ * @method mixed get_refdomains()
+ * @method mixed get_refdomains_by_type()
+ * @method mixed get_refdomains_new_lost()
+ * @method mixed get_refdomains_new_lost_counters()
+ * @method mixed get_refips()
+ * @method AhrefsAPI prepare()
+ * @method AhrefsAPI prepare_subscription_info()
+ * @method mixed prepare_broken_links()
+ * @method mixed prepare_ahrefs_rank()
+ * @method mixed prepare_anchors()
+ * @method mixed prepare_anchors_refdomains()
+ * @method mixed prepare_backlinks()
+ * @method mixed prepare_backlinks_new_lost()
+ * @method mixed prepare_backlinks_new_lost_counters()
+ * @method mixed prepare_broken_backlinks()
+ * @method mixed prepare_domain_rating()
+ * @method mixed prepare_linked_anchors()
+ * @method mixed prepare_linked_domains()
+ * @method mixed prepare_metrics()
+ * @method mixed prepare_metrics_extended()
+ * @method mixed prepare_pages()
+ * @method mixed prepare_pages_extended()
+ * @method mixed prepare_refdomains()
+ * @method mixed prepare_refdomains_by_type()
+ * @method mixed prepare_refdomains_new_lost()
+ * @method mixed prepare_refdomains_new_lost_counters()
+ * @method mixed prepare_refips()
+ */
+class AhrefsAPI
+{
 
     /**
      * Class Variables
@@ -52,16 +118,20 @@ class AhrefsAPI {
     private $curlInfo = array();
     private $post = 0;
     private $withOriginalStats = 0;
+    private $lastMessageError;
+
     /**
      * Constructing class
      * @param string $token Application API Token from ahrefs website
      * @param boolean $debug Debug status
-     * @param boolean $apiUrl URL to API Server
+     * @param string $apiUrl URL to API Server
      * @param boolean $checking Enable column checking
+     * @throws \Exception
      */
-    public function __construct($token = '', $debug = false, $apiUrl = '', $checking = true) {
+    public function __construct($token = '', $debug = false, $apiUrl = '', $checking = true)
+    {
         if (trim($token) == '')
-            throw new Exception("API token is required.");
+            throw new \Exception('API token is required.');
         $this->token = $token;
         $this->params['output'] = 'json';
         $this->debug = $debug;
@@ -77,8 +147,10 @@ class AhrefsAPI {
     /**
      * Build API V2 parameters, displaying debug messages, resetting parameter variables, calling and returning API results from getContent()
      * @return output from getContent()
+     * @throws \Exception
      */
-    private function fetch() {
+    private function fetch()
+    {
         $this->checkColumns();
         $this->buildURL();
         if (!$this->isError()) {
@@ -90,14 +162,18 @@ class AhrefsAPI {
                 $this->reset();
                 $this->is_prepare = false;
             }
+        } else {
+            throw new \Exception($this->lastMessageError);
         }
     }
 
     /**
      * Batch run all the prepared API calls
-     *
+     * @param boolean $multi
+     * @return output from getContent()
      */
-    public function run($multi = true) {
+    public function run($multi = true)
+    {
         $content = $this->getContent($multi);
         $this->displayDebug();
         return $content;
@@ -106,10 +182,12 @@ class AhrefsAPI {
      * Checking parameters column for "select", "order_by", "where" and "having"
      * @return boolean
      */
-    private function checkColumns() {
+    private function checkColumns()
+    {
         //is checking enabled
-        if (!$this->checking)
+        if (!$this->checking) {
             return true;
+        }
 
         $columns = $this->columns[$this->params['from']];
         //checking select
@@ -160,14 +238,15 @@ class AhrefsAPI {
 
     /**
      * Create paramsURL parameter from params array
-     *
+     * @throws \Exception
      */
-    private function buildURL() {
+    private function buildURL()
+    {
         //no need target and mode for subscription_info
         if (isset($this->params['from']) && $this->params['from'] != 'subscription_info') {
             foreach ($this->reqParams as $reqParam) {
                 if (!isset($this->params[$reqParam]))
-                    throw new Exception("<b>$reqParam</b> is required.");
+                    throw new \Exception("<b>$reqParam</b> is required.");
             }
         }
         $paramStr = array();
@@ -179,9 +258,10 @@ class AhrefsAPI {
 
     /**
      * Get paramsURL parameter from params array
-     *
+     * @throws \Exception
      */
-    public function getURL($from) {
+    public function getURL($from)
+    {
         $this->buildURL();
         return $this->paramsURL.'&from='.$from.'&token='.$this->token;
     }
@@ -191,12 +271,17 @@ class AhrefsAPI {
      * Display any error $this->err
      * @return boolean
      */
-    private function isError() {
-        if (!count($this->err))
+    private function isError()
+    {
+        if (!count($this->err)) {
             return false; //no error
+        }
 
-        foreach ($this->err as $error)
-            echo "Error: $error<br>";
+        $errorMessage = '';
+        foreach ($this->err as $error) {
+            $errorMessage .= sprintf('Error: %s, ', $error);
+        }
+        $this->lastMessageError = $errorMessage;
         return true;
 
     }
@@ -205,48 +290,52 @@ class AhrefsAPI {
      * Magic method to catch all functions and parse it to set_param function
      * @param string $method The name of the function
      * @param array $args Arguments passed to the function
+     * @return mixed
+     * @throws \Exception
      */
-    public function __call($method,$args) {
+    public function __call($method,$args)
+    {
         $method = explode('_', $method);
         $call = $method[0];
-        if (count($method)>1) {
+        if (count($method) > 1) {
             unset($method[0]);
             $method = implode('_',$method);
             $this->isFunction($call, $method);
-        } else
+        } else {
             $method = $method[0];
+        }
 
         $fn = array($this,'set_param');
         switch ($call) {
-            case "set":
+            case 'set':
                 $arguments = array_merge(array($method),$args);
                 break;
-            case "to":
+            case 'to':
                 $arguments = array('output',$method);
                 break;
-            case "get":
+            case 'get':
                 $arguments = array('from',$method);
                 break;
-            case "prepare":
+            case 'prepare':
                 $this->is_prepare = true;
                 $arguments = array('from',$method);
                 break;
-            case "mode":
+            case 'mode':
                 $arguments = array('mode',$method);
                 break;
-            case "select":
+            case 'select':
                 $arguments = array('select',implode(',',$args));
                 break;
-            case "order":
+            case 'order':
                 $arguments = array('order_by',implode(',',$args));
                 break;
-            case "where":
+            case 'where':
                 $arguments = array('where',array_merge(array($method),$args));
                 break;
-            case "having":
+            case 'having':
                 $arguments = array('having',array_merge(array($method),$args));
                 break;
-            case "params":
+            case 'params':
                 if ($args[0] == 'post') {
                     $this->post = $args[1];
                 } else if ($args[0] == 'withOriginalStats') {
@@ -256,7 +345,7 @@ class AhrefsAPI {
                 }
                 break;
             default:
-                throw new Exception("Function <b>$method</b> not found");
+                throw new \Exception(sprintf('Function <b>%s</b> not found', $method));
         }
         if (isset($arguments)) {
             return call_user_func_array($fn,$arguments);
@@ -266,10 +355,11 @@ class AhrefsAPI {
     /**
      * Function to take and build the parameters needed to pass to the API
      * @param string $param The name of the parameter
-     * @param string $value The value of the parameter
+     * @param string $condition The value of the parameter
      * @return $this
      */
-    private function set_param($param, $condition) {
+    private function set_param($param, $condition)
+    {
         if (in_array($param, array('where', 'having')) && is_array($condition)) {
             $this->oriParams[$param][] = $condition;
 
@@ -305,57 +395,47 @@ class AhrefsAPI {
             }
         }
 
-        if ($param == 'from')
+        if ($param === 'from') {
             return $this->fetch();
-        else if ($param == 'prepare')
+        } else if ($param === 'prepare') {
             return $this->prepare();
-        else
+        } else {
             return $this;
+        }
     }
 
 
-    private function wrapValue($value, $type) {
+    private function wrapValue($value, $type)
+    {
         //if we need to quote this value
-        if (in_array($type, $this->quotedValue))
-            $value = '"'.addslashes($value).'"';
-        else {
+        if (in_array($type, $this->quotedValue)) {
+            $value = '"' . addslashes($value) . '"';
+        } else {
             foreach($this->columns as $val) {
                 if (isset($val[$type])) {
                     if (in_array($val[$type][0], array('string','date'))) {
                         $value = '"'.addslashes($value).'"';
                         return $value;
-                    } else if (gettype($value) == 'boolean') {
-                        if ($value)
+                    } else if (gettype($value) === 'boolean') {
+                        if ($value) {
                             return 'true';
-                        else
+                        } else {
                             return 'false';
+                        }
                     }
                 }
             }
         }
         return $value;
     }
-    /*
-        private function cacheResult() {
-            if ($this->cache) {
-                $filename = 'lib/cache/'.$this->paramsURL;
-                if (!is_file($filename)) {
-                    $content = file_get_contents($this->apiURL.'/?'.$this->paramsURL);
-                    file_put_contents($filename, $content);
-                } else {
-                    $content = file_get_contents($filename);
-                }
-            } else
-                $content = file_get_contents($this->apiURL.'/?'.$this->paramsURL);
 
-            return $content;
-        }
-        */
     /**
      * Send the parameters to Ahrefs server and get the json/xml/php return
-     * @return json/xml/php data
+     * @param boolean $multi
+     * @return json|xml|php data
      */
-    private function getContent($multi = false) {
+    private function getContent($multi = false)
+    {
         $links = $this->paramsURLs;
         if (!$multi) {
             $links[0] = $this->paramsURL;
@@ -439,7 +519,8 @@ class AhrefsAPI {
     /**
      * Reset params parameter
      */
-    public function reset() {
+    public function reset()
+    {
         if (!isset($this->params['target']))
             $this->params['target'] = '';
         if (!isset($this->params['mode']))
@@ -455,7 +536,8 @@ class AhrefsAPI {
     /**
      * When debug is TRUE, this function will print out debug messages
      */
-    private function displayDebug() {
+    private function displayDebug()
+    {
         if ($this->debug) {
             $infos = $this->getCurlInfo();
             foreach ($infos as $info) {
@@ -471,15 +553,18 @@ class AhrefsAPI {
      * Checking if the function exist in this file
      * @param String $call The name of the prefix
      * @param String $name the name of the function
-     * @return Error string
+     * @return bool
+     * @throws \Exception
      */
-    private function isFunction($call, $name) {
+    private function isFunction($call, $name)
+    {
         //is checking enabled
-        if (!$this->checking)
+        if (!$this->checking) {
             return true;
+        }
 
         if (!(isset($this->functions[$call]) && in_array($name, $this->functions[$call]))) {
-            throw new Exception("Function <b>{$call}_{$name}</b> not found.");
+            throw new \Exception("Function <b>{$call}_{$name}</b> not found.");
         }
     }
 
@@ -487,17 +572,8 @@ class AhrefsAPI {
      * Get an array of curlinfo
      * @return curlInfo Array
      */
-    public function getCurlInfo() {
+    public function getCurlInfo()
+    {
         return $this->curlInfo;
     }
 }
-
-
-/**
- * Function to handle the error exceptions
- * @return Formatted error String
- */
-function Error($exception) {
-    echo "Error: " . $exception->getMessage();
-}
-set_exception_handler('Error');

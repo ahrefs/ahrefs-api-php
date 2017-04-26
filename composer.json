@@ -1,0 +1,17 @@
+{
+  "name": "ahrefs/ahrefs-api-php",
+  "description": "Wrapper for Ahrefs API V2",
+  "authors": [
+    {
+      "name": "ahrefs"
+    }
+  ],
+  "require": {
+    "ext-curl": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "ahrefs\\AhrefsApiPhp\\": "lib"
+    }
+  }
+}
