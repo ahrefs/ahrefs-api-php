@@ -1,6 +1,6 @@
 ## Ahrefs PHP API Client ##
 
-Wrapper for [Ahrefs] (https://ahrefs.com) [API V2](https://ahrefs.com/api/)
+Wrapper for [Ahrefs](https://ahrefs.com) [API V2](https://ahrefs.com/api/)
 
 ## Usage ##
 
