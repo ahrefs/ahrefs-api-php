@@ -86,6 +86,7 @@ abstract class ArrayRules
                 'pages_info',
                 'pages_extended',
                 'refdomains',
+                'refdomains_by_type',
                 'refdomains_new_lost',
                 'refdomains_new_lost_counters'
         ),
