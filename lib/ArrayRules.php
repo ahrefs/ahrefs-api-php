@@ -60,6 +60,7 @@ abstract class ArrayRules
                 'pages',
                 'pages_info',
                 'pages_extended',
+                'positions_metrics',
                 'refdomains',
                 'refdomains_by_type',
                 'refdomains_new_lost',
