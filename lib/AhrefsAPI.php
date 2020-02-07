@@ -55,6 +55,7 @@ namespace ahrefs\AhrefsApiPhp;
  * @method mixed get_refdomains_new_lost()
  * @method mixed get_refdomains_new_lost_counters()
  * @method mixed get_refips()
+ * @method mixed get_positions_metrics()
  * @method AhrefsAPI prepare()
  * @method AhrefsAPI prepare_subscription_info()
  * @method mixed prepare_broken_links()
@@ -77,6 +78,7 @@ namespace ahrefs\AhrefsApiPhp;
  * @method mixed prepare_refdomains_new_lost()
  * @method mixed prepare_refdomains_new_lost_counters()
  * @method mixed prepare_refips()
+ * @method mixed prepare_positions_metrics()
  */
 class AhrefsAPI
 {

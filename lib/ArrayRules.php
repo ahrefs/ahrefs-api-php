@@ -60,13 +60,13 @@ abstract class ArrayRules
                 'pages',
                 'pages_info',
                 'pages_extended',
-                'positions_metrics',
                 'refdomains',
                 'refdomains_by_type',
                 'refdomains_new_lost',
                 'refdomains_new_lost_counters',
                 'refips',
-                'subscription_info'
+                'subscription_info',
+                'positions_metrics',
         ),
         'prepare' => array(
                 'ahrefs_rank',
@@ -89,7 +89,8 @@ abstract class ArrayRules
                 'refdomains',
                 'refdomains_by_type',
                 'refdomains_new_lost',
-                'refdomains_new_lost_counters'
+                'refdomains_new_lost_counters',
+                'positions_metrics',
         ),
         'order' => array('by'),
     );
@@ -456,6 +457,18 @@ abstract class ArrayRules
             'rows_left' => array('int', false, false),
             'rows_limit' => array('int', false, false),
             'subscription' => array('string', false, false),
-        )
+        ),
+        "positions_metrics" => [
+            "positions" => ['int', false, false],
+            "positions_top3" => ['int', false, false],
+            "positions_top10" => ['int', false, false],
+            "traffic" => ['float', false, false],
+            "traffic_top3" => ['float', false, false],
+            "traffic_top10" => ['float', false, false],
+            "cost" => ['float', false, false],
+            "cost_top3" => ['float', false, false],
+            "cost_top10" => ['float', false, false],
+            "country" => ['string', true, false],
+        ],
     );
 }
