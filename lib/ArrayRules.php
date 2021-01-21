@@ -250,7 +250,7 @@ abstract class ArrayRules
             'url_from' => array('string', true, true),
             'url_to' => array('string', true, true),
             'ahrefs_rank' => array('int', true, true),
-            'domain_rating' => array('int', false, true),
+            'domain_to_rating' => array('int', false, true),
             'ip_from' => array('string', true, true),
             'links_internal' => array('int', true, true),
             'links_external' => array('int', true, true),
