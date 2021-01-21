@@ -13,6 +13,13 @@ use ahrefs\AhrefsApiPhp\AhrefsAPI;
 	 * @param Boolean $debug Debug message
 	 */
 	$Ahrefs = new AhrefsAPI('[YOURTOKEN]', $debug = true);
+	if (class_exists('\\GuzzleHttp\\Client')) {
+		/**
+		 * Use Guzzle HTTP Client mode.
+		 * @param Boolean $use True - use Guzzle, false - use cURL
+		 */
+		$Ahrefs->useGuzzle(true);
+	}
 	/**
 	 * Specify the aim of the request. The mode defines how the target will be interpreted. Example:
 	 * set_target('ahrefs.com/api/')
