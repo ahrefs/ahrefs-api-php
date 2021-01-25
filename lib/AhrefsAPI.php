@@ -1,11 +1,18 @@
 <?php
 
 namespace ahrefs\AhrefsApiPhp;
+
+use \GuzzleHttp\Client as GuzzleClient;
+use \GuzzleHttp\Promise as GuzzlePromize;
+use \GuzzleHttp\Exception\ConnectException as GuzzleConnectException;
+use \GuzzleHttp\Exception\RequestException as GuzzleRequestException;
+use \GuzzleHttp\RequestOptions as GuzzleRequestOptions;
+
 /**
  * AhrefsAPI v.0.1. Ahrefs.com API V2 wrapper for PHP
  *
  *
- * - https://ahrefs.com/api/documentation.php
+ * - https://ahrefs.com/api/documentation
  *
  *
  */
@@ -101,6 +108,8 @@ class AhrefsAPI
      * @var Boolean $is_prepare     is it _get or _prepare call
      * @var Boolean $checking       flag to enable/disable column & function checking
      * @var Array 	$curlInfo 	    An array of curl informations
+     * @var Boolean	$useGuzzle	    Use Guzzle Http Client instead of cURL
+     * @var \Exception|null	$lastGuzzleError	Last error returned by Guzzle HTTP Client
      */
     private $apiURL = 'http://apiv2.ahrefs.com';
     private $params;
@@ -121,6 +130,8 @@ class AhrefsAPI
     private $post = 0;
     private $withOriginalStats = 0;
     private $lastMessageError;
+    private $useGuzzle = false;
+    private $lastGuzzleError;
 
     /**
      * Constructing class
@@ -434,7 +445,7 @@ class AhrefsAPI
     /**
      * Send the parameters to Ahrefs server and get the json/xml/php return
      * @param boolean $multi
-     * @return json|xml|php data
+     * @return string|array json|xml|php data
      */
     private function getContent($multi = false)
     {
@@ -448,6 +459,31 @@ class AhrefsAPI
             }
         }
 
+        if ( $this->useGuzzle ) {
+            $results = $this->getContentGuzzle( $links );
+        } else {
+            $results = $this->getContentCurl( $links );
+        }
+
+        if (!$multi) {
+            if (count($results) > 1) {
+                $results[0] = json_decode($results[0], true);
+                $results[0]['originalStats'] = json_decode($results[1], true)['stats'];
+                $results[0] = json_encode($results[0]);
+            }
+            return $results[0];
+        }
+        return $results;
+    }
+
+    /**
+     * Execute requests using cURL
+     * @param array $links
+     * @return array json|xml|php data
+     */
+    private function getContentCurl($links)
+    {
+        $results = array();
         $mh = curl_multi_init();
         foreach ($links as $key => $params) {
             $ch[$key] = curl_init();
@@ -506,14 +542,87 @@ class AhrefsAPI
             $this->curlInfo[] = $cinfo;
         }
         curl_multi_close($mh);
+        return $results;
+    }
 
-        if (!$multi) {
-            if (count($results) > 1) {
-                $results[0] = json_decode($results[0], true);
-                $results[0]['originalStats'] = json_decode($results[1], true)['stats'];
-                $results[0] = json_encode($results[0]);
+    /**
+     * Ececute requests using Guzzle HTTP Client
+     * @param array $links
+     * @return array json|xml|php data
+     */
+    private function getContentGuzzle($links)
+    {
+        try {
+            $results = array();
+            $this->lastGuzzleError = null;
+            $this->curlInfo = array();
+            $default_options = [
+                GuzzleRequestOptions::VERIFY => false,
+                GuzzleRequestOptions::VERSION => 1.0,
+                GuzzleRequestOptions::CONNECT_TIMEOUT => 20,
+                GuzzleRequestOptions::TIMEOUT => 240, //timeout in seconds
+                GuzzleRequestOptions::DECODE_CONTENT => true,
+                GuzzleRequestOptions::HEADERS => ['Accept-Encoding' => 'gzip,deflate'],
+            ];
+            $client   = new GuzzleClient( $default_options );
+            $promises = array();
+            $infoKeys = array();
+            foreach ($links as $key => $params) {
+                $this->curlInfo[] = null; // fill for backward compability.
+                $info = & $this->curlInfo[count($this->curlInfo) - 1];
+                $infoKeys[$key] = count($this->curlInfo) - 1;
+                $options = [
+                    GuzzleRequestOptions::ON_STATS => function( $stats ) use ( &$info ) {
+                        $info = $stats->getHandlerStats();
+                        if (is_array($info)&&isset($info['error'])) {
+                            $info['curl_error'] = $info['error'];
+                        }
+                    },
+                ];
+                // Initiate each request but do not block.
+                if ($this->post) {
+                    $post_options = [
+                        GuzzleRequestOptions::HEADERS => ['Accept-Encoding' => 'gzip,deflate', 'Content-Type' => 'text/plain'],
+                        GuzzleRequestOptions::BODY    => $this->post,
+                        'curl' => [
+                            CURLOPT_LOW_SPEED_LIMIT => 1,
+                            CURLOPT_LOW_SPEED_TIME => 2400,
+                        ],
+
+                    ];
+                    $promises[ $key ] = $client->postAsync( $this->apiURL.'/?'.$params.'&token='.$this->token, $options + $post_options );
+                } else {
+                    $promises[ $key ] = $client->getAsync( $this->apiURL.'/?'.$params.'&token='.$this->token, $options );
+                }
             }
-            return $results[0];
+
+            $responses = array();
+            try {
+                // Wait for the requests to complete, even if some of them fail.
+                $responses = GuzzlePromize\Utils::settle( $promises )->wait();
+            } catch ( GuzzleConnectException $e ) {
+                $this->lastGuzzleError = $e;
+                // return empty result.
+                return array_map(
+                    function( $value ) {
+                        return '';
+                    },
+                    $links
+                );
+            }
+
+            foreach ( $responses as $key => $response ) {
+                if ( 'fulfilled' === $response['state'] ) {
+                    $results[ $key ] = (string) $response['value']->getBody();
+                } else {
+                    $results[ $key ] = '';
+                    if ( $response['reason'] instanceof GuzzleRequestException ) {
+                        $this->curlInfo[$infoKeys[$key]] = $response['reason']->getHandlerContext();
+                    }
+                }
+            }
+        } catch ( \Exception $e ) {
+            $this->lastGuzzleError = $e;
         }
         return $results;
     }
@@ -577,5 +686,23 @@ class AhrefsAPI
     public function getCurlInfo()
     {
         return $this->curlInfo;
+    }
+
+    /**
+     * Get last error from Guzzle HTTP Client
+     * @return \Exception|null
+     */
+    public function getlastGuzzleError()
+    {
+        return $this->lastGuzzleError;
+    }
+
+    /**
+     * Use Guzzle HTTP Client or cUrl
+     * @param Boolean $use True - use Guzzle, false - use cURL
+    */
+    public function useGuzzle( $use = true )
+    {
+        $this->useGuzzle = $use;
     }
 }

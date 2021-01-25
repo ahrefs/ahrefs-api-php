@@ -9,6 +9,9 @@
   "require": {
     "ext-curl": "*"
   },
+  "suggest": {
+    "guzzlehttp/guzzle": "Required to use Guzzle HTTP Client mode, require version 6.3+"
+  },
   "autoload": {
     "psr-4": {
       "ahrefs\\AhrefsApiPhp\\": "lib"
