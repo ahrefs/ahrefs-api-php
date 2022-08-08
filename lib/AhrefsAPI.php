@@ -53,6 +53,7 @@ use \GuzzleHttp\RequestOptions as GuzzleRequestOptions;
  * @method mixed get_domain_rating()
  * @method mixed get_linked_anchors()
  * @method mixed get_linked_domains()
+ * @method mixed get_linked_by_domains_type()
  * @method mixed get_metrics()
  * @method mixed get_metrics_extended()
  * @method mixed get_pages()
